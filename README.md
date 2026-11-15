@@ -48,6 +48,17 @@ FileFlow allows users to convert, resize, compress, merge, split, and manage fil
 | JSZip | ZIP file generation |
 | LocalStorage | Conversion history |
 
+## 📸 Application Screenshots
+
+### Homepage
+![FileFlow Homepage](screenshots/homepage.png)
+
+### Image Converter
+![Image Converter](screenshots/image-converter.png)
+
+### PDF Tools
+![PDF Tools](screenshots/pdf-tools.png)
+
 ## 🚀 How to Run
 
 1. Download or clone this repository.
@@ -63,6 +74,11 @@ No installation or build process is required.
 
 ```text
 FileFlow/
+│
+├── screenshots/
+│   ├── homepage.png
+│   ├── image-converter.png
+│   └── pdf-tools.png
 │
 ├── index.html
 ├── style.css
