@@ -1,62 +1,92 @@
-# FileFlow (Web)
+# FileFlow – Browser-Based File Conversion Toolkit
 
-A privacy-friendly file toolkit that runs **entirely in your browser** – no uploads, no server, no build step. Just HTML, CSS and vanilla JavaScript.
+A privacy-friendly, browser-based file conversion and management toolkit built using **HTML, CSS, and JavaScript**.
 
-This is the web edition of FileFlow, originally built as a desktop app with **C# / .NET / Avalonia**.
+FileFlow allows users to convert, resize, compress, merge, split, and manage files directly in their browser without uploading files to an external server.
 
-## Features
+## ✨ Features
 
-**Image Tools**
-- Batch convert many images at once (PNG, JPG, WEBP, BMP) and download everything as a ZIP
-- Resize with aspect-ratio lock, quality control, side-by-side preview with zoom, size comparison
+### 🖼️ Image Tools
+- Batch image conversion (PNG, JPG, WEBP, BMP).
+- Image resizing with aspect-ratio lock.
+- Image quality adjustment.
+- Image preview and file-size comparison.
+- Download converted images in ZIP format.
 
-**PDF Tools**
-- Merge PDFs (reorder with arrows)
-- Extract pages – click page thumbnails or type `1,3-5`
-- Split a PDF into single pages (ZIP)
-- Protect with a password (AES-256, with print / copy / edit permissions)
-- Remove a password
+### 📄 PDF Tools
+- Merge multiple PDF files.
+- Extract selected PDF pages.
+- Split PDFs into individual pages.
+- Password-protect PDF files using AES-256 encryption.
+- Remove PDF passwords.
 
-**Compression**
-- Images: quality presets, optional max-dimension, auto-format, and "keep original if not smaller"
-- PDFs: *Maximum compression* (re-renders pages as JPEG – 80–90 % smaller for scans) or *Keep text* (lossless optimisation)
-- Batch support with total space saved
+### 📦 File Compression
+- Image compression with quality presets.
+- PDF compression with two modes:
+  - Maximum Compression
+  - Keep Text
+- Batch processing and storage savings comparison.
 
-**Also:** drag & drop anywhere on the page, File Inspector (detects real file type from its signature), searchable history, light/dark theme.
+### ⚙️ Additional Features
+- Drag-and-drop file support.
+- File Inspector for detecting actual file types.
+- Searchable conversion history.
+- Light and Dark themes.
+- Browser-based file processing.
 
-## Run it
+## 🛠️ Technologies Used
 
-Extract the folder and open `index.html` in a browser. No installation needed. (Keep `index.html`, `style.css` and `script.js` in the same folder.)
+| Technology | Purpose |
+|---|---|
+| HTML5 | Application structure |
+| CSS3 | Styling and responsive interface |
+| JavaScript (ES2020) | Application functionality |
+| Canvas API | Image processing |
+| pdf-lib | PDF manipulation |
+| PDF.js | PDF rendering and previews |
+| qpdf WebAssembly | PDF encryption and optimization |
+| JSZip | ZIP file generation |
+| LocalStorage | Conversion history |
 
-Or host it free with **GitHub Pages**: repo *Settings → Pages → Deploy from branch → main / root*.
+## 🚀 How to Run
 
-## Tech
+1. Download or clone this repository.
+2. Extract the project folder if downloaded as ZIP.
+3. Open `index.html` in your browser.
+4. Start using FileFlow.
 
-- HTML5, CSS3 (CSS variables for theming), vanilla JavaScript (ES2020)
-- Canvas API – image decoding, resizing, JPG/PNG/WEBP encoding (custom BMP encoder)
-- [pdf-lib](https://pdf-lib.js.org/) – merge, extract, split, PDF building
-- [PDF.js](https://mozilla.github.io/pdf.js/) – page thumbnails and page rendering for compression
-- [qpdf (WebAssembly)](https://github.com/neslinesli93/qpdf-wasm) – AES-256 encryption, password removal, lossless optimisation
-- [JSZip](https://stuk.github.io/jszip/) – ZIP downloads
-- `localStorage` – conversion history
+No installation or build process is required.
 
-Libraries are loaded lazily from a CDN only when a feature needs them, so an internet connection is required for PDF features and ZIP downloads.
+**Note:** An internet connection is required for PDF features and ZIP downloads because supporting libraries are loaded from CDNs.
 
-## Differences from the desktop version
+## 📁 Project Structure
 
-| Feature | Desktop (C# / Avalonia) | Web |
-|---|---|---|
-| Image conversion | ImageSharp | Canvas API |
-| PDF merge / extract / split | PDFsharp | pdf-lib |
-| PDF protection | PDFsharp (RC4) | qpdf-wasm (AES-256) |
-| PDF compression | Ghostscript | PDF.js + pdf-lib re-render, or qpdf lossless |
-| History storage | SQLite | localStorage (output files downloadable during the session only) |
-| Save location | Native file dialog | Browser download |
-
-## Project structure
-
+```text
+FileFlow/
+│
+├── index.html
+├── style.css
+├── script.js
+└── README.md
 ```
-index.html   – layout and pages
-style.css    – themes and styling
-script.js    – all application logic
-```
+
+## 🔒 Privacy
+
+FileFlow processes files directly within the browser. Files are not uploaded to an application server.
+
+## 👩‍💻 Developer
+
+**Anvi Soni**
+
+B.Sc. Cyber Security
+
+## 📌 Project Information
+
+- Project Name: FileFlow
+- Project Type: Web Application
+- Category: File Conversion and Management
+- Development: HTML, CSS and JavaScript
+
+---
+
+*FileFlow – Your files, your control.*
