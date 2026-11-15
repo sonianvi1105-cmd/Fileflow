@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="FileFlow – convert, compress and manage images and PDFs privately in your browser.">
+  <title>FileFlow – Browser File Toolkit</title>
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // Apply the saved theme before first paint (avoids a flash)
+    try { var t = localStorage.getItem("fileflow-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">F</div>
+      <div>
+        <div class="brand-name">FileFlow</div>
+        <div class="brand-sub">FILE MANAGEMENT</div>
+      </div>
+    </div>
+
+    <nav>
+      <div class="nav-label">WORKSPACE</div>
+      <button class="nav-btn active" data-page="dashboard">▦&nbsp; Dashboard</button>
+      <button class="nav-btn" data-page="image">▧&nbsp; Image Tools</button>
+      <button class="nav-btn" data-page="pdf">▤&nbsp; PDF Tools</button>
+      <button class="nav-btn" data-page="compress">▣&nbsp; Compression</button>
+      <button class="nav-btn" data-page="inspect">◎&nbsp; File Inspector</button>
+      <div class="nav-label" style="margin-top:20px">PRODUCTIVITY</div>
+      <button class="nav-btn" data-page="history">◷&nbsp; Conversion History</button>
+    </nav>
+
+    <div class="sidebar-foot">FILEFLOW • VERSION 2.0</div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <header class="top">
+      <div>
+        <h1 id="pageTitle">Dashboard</h1>
+        <p id="pageSub">Welcome to your personal file workspace.</p>
+      </div>
+      <div class="top-right">
+        <button class="theme-btn" id="themeBtn" title="Toggle light / dark theme" aria-label="Toggle theme">◐</button>
+        <div class="badge">●&nbsp; PRIVATE – RUNS IN YOUR BROWSER</div>
+      </div>
+    </header>
+
+    <!-- ===================== DASHBOARD ===================== -->
+    <section class="page active" id="page-dashboard">
+      <div class="banner">
+        <div>
+          <div class="eyebrow">YOUR FILE WORKSPACE</div>
+          <h2>Your Files, Your Workspace.</h2>
+          <p>Convert, compress and manage images and PDFs. Nothing is uploaded – every file is processed locally in your browser. Tip: you can drop files anywhere on the page.</p>
+        </div>
+        <div class="banner-logo">F</div>
+      </div>
+
+      <h3 class="section-title">Quick Access</h3>
+      <p class="muted small">Choose a tool to get started.</p>
+
+      <div class="cards">
+        <div class="card">
+          <div class="icon" style="background:#263F65;color:#91BBFF">▧</div>
+          <h4>Image Tools</h4>
+          <p class="muted small">Batch convert, resize and download as a ZIP.</p>
+          <button class="quick" data-go="image">Open Image Tools →</button>
+        </div>
+        <div class="card">
+          <div class="icon" style="background:#493047;color:#F0A5C0">▤</div>
+          <h4>PDF Tools</h4>
+          <p class="muted small">Merge, extract, split, protect and unlock PDFs.</p>
+          <button class="quick" data-go="pdf">Open PDF Tools →</button>
+        </div>
+        <div class="card">
+          <div class="icon" style="background:#25463E;color:#76D9A5">▣</div>
+          <h4>Compression</h4>
+          <p class="muted small">Shrink images and PDFs with before/after stats.</p>
+          <button class="quick" data-go="compress">Open Compression →</button>
+        </div>
+        <div class="card">
+          <div class="icon" style="background:#4a3d22;color:#FFB86C">◎</div>
+          <h4>File Inspector</h4>
+          <p class="muted small">Detect a file's real type from its signature.</p>
+          <button class="quick" data-go="inspect">Open Inspector →</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:22px">
+        <div class="row-between">
+          <h3 style="margin:0">Recent Activity</h3>
+          <button class="quick" data-go="history">View All →</button>
+        </div>
+        <div id="recentActivity" class="muted small" style="margin-top:12px"></div>
+      </div>
+    </section>
+
+    <!-- ===================== IMAGE TOOLS ===================== -->
+    <section class="page" id="page-image">
+      <div class="panel">
+        <div class="panel-title">INPUT IMAGES</div>
+        <label class="drop" id="imgDrop">
+          <input type="file" id="imgInput" accept="image/png,image/jpeg,image/webp,image/bmp,image/gif" multiple hidden>
+          <div class="drop-icon">⇪</div>
+          <div><b>Drop images here</b> or click to browse</div>
+          <div class="muted tiny">PNG, JPG, WEBP, BMP, GIF – select as many as you like</div>
+        </label>
+        <div id="imgList" class="items"></div>
+        <div class="actions" id="imgListActions" style="display:none">
+          <button class="btn ghost" id="imgClear">Clear all</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">RESIZE SETTINGS</div>
+        <div class="grid2">
+          <label>Width (px)<input type="number" id="imgW" min="1" max="20000" placeholder="Width in pixels"></label>
+          <label>Height (px)<input type="number" id="imgH" min="1" max="20000" placeholder="Height in pixels"></label>
+        </div>
+        <label class="check"><input type="checkbox" id="imgAspect" checked> Maintain aspect ratio</label>
+        <p class="muted tiny">With aspect ratio on, each image fits inside these bounds. Leave both empty to keep the original size.</p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">OUTPUT SETTINGS</div>
+        <div class="grid2">
+          <label>Output format
+            <select id="imgFormat"><option>PNG</option><option>JPG</option><option>WEBP</option><option>BMP</option></select>
+          </label>
+          <label>Quality: <span id="imgQLabel">90</span>%
+            <input type="range" id="imgQ" min="1" max="100" value="90">
+          </label>
+        </div>
+        <p class="muted tiny">Quality applies to JPG and WEBP. PNG and BMP are lossless.</p>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="imgConvert">Convert Images</button>
+        <a class="btn secondary hidden" id="imgDownload">Download</a>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">STATUS</div>
+        <progress id="imgProg" class="prog" max="1" value="0" hidden></progress>
+        <div id="imgStatus" class="status">Add one or more images to begin.</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">PREVIEW (click a file above to preview it)</div>
+        <label>Preview zoom
+          <input type="range" id="imgZoom" min="0.5" max="2" step="0.1" value="1">
+        </label>
+        <div class="grid2">
+          <div>
+            <div class="bold small">ORIGINAL</div>
+            <div class="preview"><img id="imgOrig" alt="Original preview"></div>
+            <div class="muted tiny pre" id="imgOrigInfo">No image selected</div>
+          </div>
+          <div>
+            <div class="bold small">CONVERTED</div>
+            <div class="preview"><img id="imgConv" alt="Converted preview"></div>
+            <div class="muted tiny pre" id="imgConvInfo">Not converted yet</div>
+          </div>
+        </div>
+        <div class="compare small" id="imgCompare">Original: —&nbsp;&nbsp; Converted: —<br>Space saved: —&nbsp;&nbsp; Reduction: —</div>
+      </div>
+    </section>
+
+    <!-- ===================== PDF TOOLS ===================== -->
+    <section class="page" id="page-pdf">
+      <div class="panel">
+        <div class="panel-title">PDF TOOLS</div>
+        <label>Select operation
+          <select id="pOp">
+            <option value="merge">Merge PDFs</option>
+            <option value="extract">Extract pages</option>
+            <option value="split">Split into single pages</option>
+            <option value="protect">Protect with password</option>
+            <option value="unlock">Remove password</option>
+          </select>
+        </label>
+        <label class="drop" id="pDrop" style="margin-top:12px">
+          <input type="file" id="pInput" accept="application/pdf,.pdf" multiple hidden>
+          <div class="drop-icon">⇪</div>
+          <div><b id="pDropTitle">Drop PDF files here</b> or click to browse</div>
+          <div class="muted tiny" id="pDropHint">Add two or more PDFs, then reorder them with the arrows</div>
+        </label>
+        <div id="pFiles" class="items"></div>
+      </div>
+
+      <div class="panel hidden" id="pThumbWrap">
+        <div class="panel-title">PAGE PREVIEWS</div>
+        <div class="muted small" id="pThumbInfo"></div>
+        <div id="pThumbs" class="thumbs"></div>
+      </div>
+
+      <div class="panel hidden" id="pExtractBox">
+        <div class="panel-title">PAGES TO EXTRACT</div>
+        <label>Pages (click thumbnails above, or type e.g. 1,3-5)
+          <input type="text" id="pPageBox" placeholder="Example: 1,3-5">
+        </label>
+      </div>
+
+      <div class="panel hidden" id="pProtectBox">
+        <div class="panel-title">PASSWORD PROTECTION (AES-256)</div>
+        <div class="grid2">
+          <label>Password to open the PDF
+            <input type="password" id="pUser" placeholder="Required" autocomplete="new-password">
+          </label>
+          <label>Owner password (controls permissions)
+            <input type="password" id="pOwner" placeholder="Optional – random if empty" autocomplete="new-password">
+          </label>
+        </div>
+        <label class="check"><input type="checkbox" id="pShowPw"> Show passwords</label>
+        <div class="panel-title" style="margin-top:12px">PERMISSIONS</div>
+        <label class="check"><input type="checkbox" id="pAllowPrint" checked> Allow printing</label>
+        <label class="check"><input type="checkbox" id="pAllowCopy"> Allow copying text</label>
+        <label class="check"><input type="checkbox" id="pAllowEdit"> Allow editing / annotations</label>
+        <p class="muted tiny">Permissions are enforced by well-behaved PDF viewers. Keep your password safe – it can't be recovered.</p>
+      </div>
+
+      <div class="panel hidden" id="pUnlockBox">
+        <div class="panel-title">REMOVE PASSWORD</div>
+        <label>Current password
+          <input type="password" id="pPass" placeholder="Password of the protected PDF" autocomplete="off">
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="pRun">Merge PDFs</button>
+        <a class="btn secondary hidden" id="pDownload">Download</a>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">STATUS</div>
+        <progress id="pProg" class="prog" max="1" value="0" hidden></progress>
+        <div id="pStatus" class="status">Select two or more PDF files to merge.</div>
+      </div>
+    </section>
+
+    <!-- ===================== COMPRESSION ===================== -->
+    <section class="page" id="page-compress">
+      <div class="panel">
+        <div class="panel-title">COMPRESSION</div>
+        <label>Compression type
+          <select id="cMode"><option>Image</option><option>PDF</option></select>
+        </label>
+        <label class="drop" id="cDrop" style="margin-top:12px">
+          <input type="file" id="cInput" accept="image/png,image/jpeg,image/webp,image/bmp" multiple hidden>
+          <div class="drop-icon">⇪</div>
+          <div><b id="cDropTitle">Drop images here</b> or click to browse</div>
+          <div class="muted tiny">You can compress many files at once</div>
+        </label>
+        <div id="cList" class="items"></div>
+        <div class="actions" id="cListActions" style="display:none">
+          <button class="btn ghost" id="cClear">Clear all</button>
+        </div>
+      </div>
+
+      <div class="panel" id="cImageOpts">
+        <div class="panel-title">IMAGE OPTIONS</div>
+        <div class="presets">
+          <button class="chip" data-preset="light">Light – best quality</button>
+          <button class="chip active" data-preset="balanced">Balanced</button>
+          <button class="chip" data-preset="strong">Strong – smallest</button>
+        </div>
+        <div class="grid2">
+          <label>Image quality: <span id="cQLabel">70</span>%
+            <input type="range" id="cQ" min="1" max="100" value="70">
+          </label>
+          <label>Limit longest side to (px, optional)
+            <input type="number" id="cMax" min="0" max="20000" placeholder="e.g. 1920 (empty = keep size)" value="2560">
+          </label>
+        </div>
+        <label>Output format
+          <select id="cFormat">
+            <option value="AUTO">Auto (keep each file's format)</option>
+            <option value="JPG">JPG (smallest for photos)</option>
+            <option value="WEBP">WEBP (small, modern)</option>
+            <option value="PNG">PNG (lossless, may stay large)</option>
+          </select>
+        </label>
+        <p class="muted tiny">Tip: PNG is lossless, so quality does nothing for it – use JPG/WEBP or reduce the size limit to shrink screenshots and graphics.</p>
+      </div>
+
+      <div class="panel hidden" id="cPdfOpts">
+        <div class="panel-title">PDF OPTIONS</div>
+        <label>Method
+          <select id="cPdfMethod">
+            <option value="raster">Maximum compression – re-render pages as images (text not selectable)</option>
+            <option value="lossless">Keep text – lossless optimization (smaller savings)</option>
+          </select>
+        </label>
+        <label id="cLevelWrap">Compression level
+          <select id="cPdfLevel">
+            <option value="Low">Low – 150 dpi, high quality</option>
+            <option value="Medium" selected>Medium – 110 dpi (recommended)</option>
+            <option value="High">High – 72 dpi, smallest file</option>
+          </select>
+        </label>
+        <p class="muted tiny">Maximum compression works best on scanned PDFs and image-heavy documents. For text documents choose "Keep text".</p>
+      </div>
+
+      <div class="panel">
+        <label class="check"><input type="checkbox" id="cKeep" checked> Keep the original if the result isn't smaller</label>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="cRun">Compress Files</button>
+        <a class="btn secondary hidden" id="cDownload">Download</a>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">COMPRESSION STATISTICS</div>
+        <div id="cStats" class="small">—</div>
+        <progress id="cProg" class="prog" max="1" value="0" hidden></progress>
+        <div id="cStatus" class="status" style="margin-top:10px">Choose files to begin.</div>
+      </div>
+    </section>
+
+    <!-- ===================== FILE INSPECTOR ===================== -->
+    <section class="page" id="page-inspect">
+      <div class="panel">
+        <div class="panel-title">FILE INSPECTOR</div>
+        <p class="muted small">FileFlow reads the first bytes of each file (its signature) to find the real format, even if the extension is wrong.</p>
+        <label class="drop" id="inspectDrop">
+          <input type="file" id="inspectInput" multiple hidden>
+          <div class="drop-icon">⇪</div>
+          <div><b>Drop any files here</b> or click to browse</div>
+        </label>
+      </div>
+      <div id="inspectResults"></div>
+    </section>
+
+    <!-- ===================== HISTORY ===================== -->
+    <section class="page" id="page-history">
+      <div class="panel">
+        <div class="filters">
+          <input type="text" id="hSearch" placeholder="Search filename or operation">
+          <select id="hFilter"><option>All</option><option>Image</option><option>PDF</option><option>Other</option></select>
+          <button class="btn" id="hSearchBtn">Search</button>
+          <button class="btn danger" id="hClear">Clear All</button>
+        </div>
+        <div id="hStatus" class="muted small" style="margin-top:10px"></div>
+      </div>
+      <div id="hList"></div>
+    </section>
+  </main>
+</div>
+
+<div class="drop-overlay" id="dropOverlay"><div>Drop files to add them to the current tool</div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
